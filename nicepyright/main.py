@@ -18,6 +18,7 @@ def watch() -> None:
         )
 
         async for output in PyrightOutput.pyright_watch():
+            con.clear()
             con.print(output)
 
     asyncio.run(main())

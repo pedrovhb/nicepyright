@@ -206,8 +206,7 @@ class ParsedDiagnostic(NamedTuple):
     def __rich_repr__(self) -> str:
         cat_str = camel_case_to_capitalized_text(self.category)
         results = [
-            f"{camel_case_to_capitalized_text(k)}: {v}"
-            for k, v in self.result.named.items()
+            f"{camel_case_to_capitalized_text(k)}: {v}" for k, v in self.result.named.items()
         ]
         results_str = textwrap.indent("\n".join(results), "  ")
         return f"{cat_str}:\n{results_str}"
@@ -239,9 +238,7 @@ class PyrightDiagnostic:
         rng = d.pop("range")
         d["range_start"] = Range(rng["start"]["line"], rng["start"]["character"])
         d["range_end"] = Range(rng["end"]["line"], rng["end"]["character"])
-        d["rule"] = (
-            DiagnosticRule[d["rule"].replace("report", "")] if "rule" in d else None
-        )
+        d["rule"] = DiagnosticRule[d["rule"].replace("report", "")] if "rule" in d else None
         return cls(**d)
 
     @property
@@ -306,7 +303,6 @@ class PyrightDiagnostic:
 
         # Go through diagnostic  and addendums and colorize the special values.
         for result_tag, result_span in parsed.result.spans.items():
-            con.print(f"Result tag: {result_tag}, span: {result_span}")
             result_text = parsed.result.named[result_tag]
             diagnostic_text.spans.append(
                 Span(*result_span, style=f"bold {tag_colors[result_text]}")
@@ -348,9 +344,7 @@ class PyrightDiagnostic:
             err_description = f" ({camel_case_to_capitalized_text(self.rule.name)})"
         else:
             err_description = ""
-        err_title = (
-            f"{err_class_style}{self.severity.name.capitalize()}[/]{err_description}"
-        )
+        err_title = f"{err_class_style}{self.severity.name.capitalize()}[/]{err_description}"
 
         f_path, f_name = str(self.file.relative_to(Path.cwd()).parent), self.file.name
         file_display = f"[dim]{f_path}[/]/[bold #FFFFFF]{f_name}[/]"
@@ -362,9 +356,7 @@ class PyrightDiagnostic:
 
         panel = Panel(
             Group(
-                get_diagnostic_syntax(
-                    self.file.read_text(), self.range_start, self.range_end
-                ),
+                get_diagnostic_syntax(self.file.read_text(), self.range_start, self.range_end),
                 Padding(Group(*self.get_message()), (1, 2, 0, 2)),
             ),
             title=err_title,
@@ -474,19 +466,13 @@ class PyrightOutput:
                         end="",
                     ),
                     Text.from_markup(f"[bold red]{count_error} {s_error}", end=""),
-                    Text.from_markup(
-                        f"[bold yellow]{count_warning} {s_warning}", end=""
-                    ),
-                    Text.from_markup(
-                        f"[bold blue]{count_info} information {s_info}", end=""
-                    ),
+                    Text.from_markup(f"[bold yellow]{count_warning} {s_warning}", end=""),
+                    Text.from_markup(f"[bold blue]{count_info} information {s_info}", end=""),
                 ]
             ),
         )
 
-    def __rich_console__(
-        self, console: Console, options: ConsoleOptions
-    ) -> RenderResult:
+    def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:
         """Render the pyright output as a rich console."""
         yield f"pyright {self.version}"
 
@@ -535,14 +521,15 @@ def parse_message(message: str) -> ParsedDiagnostic:
         if (parsed := p.parse(diagnostic))
     ]
     if len(parsed_diagnostics) == 0:
-        con.log(f"Could not parse diagnostic: {diagnostic}", log_locals=True)
+        # con.log(f"Could not parse diagnostic: {diagnostic}", log_locals=True)
         return ParsedDiagnostic(
             "unknown", diagnostic, parse.parse("result: {mask}", "result: idk"), []
         )  # todo
     elif len(parsed_diagnostics) > 1:
-        con.log(f"Could not parse diagnostic: {diagnostic}", log_locals=True)
+        # con.log(f"Could not parse diagnostic: {diagnostic}", log_locals=True)
+        pass
 
-    return parsed_diagnostics[0]
+    return parsed_diagnostics[-1]
 
 
 parsed_messages = _get_message_parsers()
