@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "nicepyright"
+version = "0.1.2"
+description = ""
+authors = ["Pedro Batista <pedrovhb@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pyright = "^1.1.288"
+rich = "^13.0.1"
+parse = "^1.19.0"
+
+[tool.poetry.scripts]
+nicepyright = "nicepyright.main:watch"
+
+[tool.poetry.group.dev.dependencies]
+black = {extras = ["d"], version = "^22.12.0"}
+usort = "^1.0.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
